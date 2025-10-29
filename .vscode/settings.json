@@ -1,0 +1,57 @@
+{
+  "material-icon-theme.folders.associations": {
+    "docker_compose": "docker",
+    "domain": "core",
+    "entities": "class",
+    "value_objects": "constant",
+    "exceptions": "error",
+    "application": "app",
+    "infrastructure": "server",
+    "logic": "rules",
+    "api": "json",
+    "app": "src",
+    "queries": "class",
+    "mediator": "api",
+    "message_brokers": "mail",
+    "commands": "class",
+    "websockets": "less",
+  },
+  "python.testing.pytestArgs": [
+    "."
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "cSpell.words": [
+    "autoflake",
+    "BASICAUTH",
+    "BOOTSTRAPSERVERS",
+    "confluentinc",
+    "cursorignore",
+    "dbdata",
+    "docformatter",
+    "ipython",
+    "isort",
+    "libpq",
+    "mypy",
+    "nmap",
+    "provectuslabs",
+    "punq",
+    "pycache",
+    "pyproject",
+    "pytest",
+    "PYTHONDONTWRITEBYTECODE",
+    "PYTHONPATH",
+    "PYTHONUNBUFFERED",
+    "pyupgrade",
+    "uvicorn",
+    "venv",
+    "virtualenvs"
+  ],
+  "cSpell.language": "en",
+  "cSpell.ignoreRegExpList": [
+    "/[а-яА-ЯёЁ]+/g"
+  ],
+  "files.exclude": {
+    "**/__pycache__": true
+  }
+}
