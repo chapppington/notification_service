@@ -25,7 +25,7 @@ router = APIRouter(
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
-    description="Эндпоинт создаёт нового пользователя, если пользователь с таким username существует, то возвращается 400 ошибка",
+    description="Эндпоинт создаёт нового пользователя, если успешно, то пытается послать уведомления на все доступные контакты, если пользователь с таким username существует, то возвращается 400 ошибка",
     responses={
         status.HTTP_201_CREATED: {"model": CreateUserResponseSchema},
         status.HTTP_400_BAD_REQUEST: {"model": ErrorResponseSchema},

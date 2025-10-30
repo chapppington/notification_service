@@ -8,7 +8,16 @@ from punq import (
 
 from infrastructure.repositories.user.base import BaseUsersRepository
 from infrastructure.repositories.user.mongo import MongoDBUsersRepository
+from infrastructure.task_queues.base import BaseTaskQueue
+from infrastructure.task_queues.celery import CeleryTaskQueue
 from logic.mediator import Mediator
+from logic.services.notification import (
+    BaseNotificationService,
+    ComposedNotificationService,
+    EmailNotificationService,
+    SmsNotificationService,
+    TelegramNotificationService,
+)
 from logic.services.user import (
     BaseUserService,
     MongoUserService,
@@ -50,6 +59,49 @@ def _init_container() -> Container:
     container.register(
         BaseUserService,
         MongoUserService,
+        scope=Scope.singleton,
+    )
+
+    def init_task_queue():
+        return CeleryTaskQueue(
+            broker_url="redis://redis:6379/0",
+            backend_url="redis://redis:6379/0",
+            app_name="notification_service",
+        )
+
+    container.register(
+        BaseTaskQueue,
+        factory=init_task_queue,
+        scope=Scope.singleton,
+    )
+
+    container.register(
+        EmailNotificationService,
+        scope=Scope.singleton,
+    )
+
+    container.register(
+        TelegramNotificationService,
+        scope=Scope.singleton,
+    )
+
+    container.register(
+        SmsNotificationService,
+        scope=Scope.singleton,
+    )
+
+    def init_composed_notification_service():
+        return ComposedNotificationService(
+            notification_services=[
+                container.resolve(EmailNotificationService),
+                container.resolve(TelegramNotificationService),
+                container.resolve(SmsNotificationService),
+            ],
+        )
+
+    container.register(
+        BaseNotificationService,
+        factory=init_composed_notification_service,
         scope=Scope.singleton,
     )
 
