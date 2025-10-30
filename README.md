@@ -12,6 +12,17 @@
 
 ---
 
+## Стек
+
+- Python 3.13, FastAPI — REST API
+- Pydantic v2, pydantic-settings — схемы и конфигурация
+- MongoDB (motor) — хранилище пользователей
+- Celery + брокер (в docker worker) — асинхронные задачи и fallback-отправка
+- punq — DI‑контейнер
+- Pytest — тесты, in-memory реализации для изоляции
+
+---
+
 ## Архитектура (слои и ответственность)
 
 - **Domain (бизнес-модель)**: `app/domain`
@@ -79,7 +90,7 @@
 - `MONGO_DB_CONNECTION_URI` — строка подключения к MongoDB
 - `MONGODB_USER_DATABASE` — имя БД (по умолчанию `user`)
 - `MONGODB_USER_COLLECTION` — коллекция (по умолчанию `user`)
-- `REDIS_CONNECTION_URI` — Redis для брокера/результатов задач (по умолчанию `redis://redis:6379/0`)
+- `REDIS_CONNECTION_URI` — строка подключения Redis (используется для Celery worker)
 
 Для локальной разработки можно оставить значения по умолчанию и поднимать окружение через docker-compose (см. ниже).
 
@@ -94,14 +105,14 @@ Docker Compose
    ```bash
    make all
    ```
-   Это поднимет MongoDB, Redis, воркер и приложение.
+   Это поднимет MongoDB, воркер и приложение.
 
 Полезные команды:
 - Остановить всё: `make all-down`
-- Только хранилища (Mongo/Redis): `make storages`
+- Только хранилища (MongoDB): `make storages`
 - Только приложение: `make app`
 - Только очередь/worker: `make task-queue`
-- Логи: `make app-logs`, `make celery-logs`, `make storages-logs`, `make redis-logs`
+- Логи: `make app-logs`, `make celery-logs`, `make storages-logs`
 
 Приложение будет доступно:
 - Swagger: `http://localhost:8000/api/docs`
