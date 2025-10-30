@@ -4,11 +4,11 @@ from dataclasses import (
 )
 
 from domain.entities.user import UserEntity
-from infrastructure.repositories.user.base import BaseUsersRepository
+from infrastructure.repositories.user.base import BaseUserRepository
 
 
 @dataclass
-class DummyInMemoryUsersRepository(BaseUsersRepository):
+class DummyInMemoryUserRepository(BaseUserRepository):
     _saved_users: list[UserEntity] = field(default_factory=list, kw_only=True)
 
     async def check_user_exists_by_username(self, username: str) -> bool:

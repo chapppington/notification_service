@@ -3,7 +3,6 @@ from abc import (
     abstractmethod,
 )
 from dataclasses import dataclass
-from typing import Iterable
 
 from domain.entities.user import UserEntity
 from infrastructure.task_queues.base import BaseTaskQueue
@@ -62,24 +61,18 @@ class SmsNotificationService(BaseNotificationService):
 
 @dataclass
 class ComposedNotificationService(BaseNotificationService):
-    notification_services: Iterable[BaseNotificationService]
+    task_queue: BaseTaskQueue
 
     async def send(self, subject: str, message: str, user: UserEntity) -> str:
-        """Tries services one by one until one succeeds.
-
-        Returns task_id of the first successful service.
-
-        """
-        last_error = None
-
-        for service in self.notification_services:
-            try:
-                task_id = await service.send(subject, message, user)
-                return task_id
-            except Exception as e:
-                last_error = e
-                continue
-
-        raise Exception(
-            f"All notification services failed. Last error: {str(last_error)}",
+        """Send notification with fallback (Email -> Telegram -> SMS) in
+        Worker."""
+        result = await self.task_queue.send_task(
+            "send_notification_with_fallback",
+            email=user.email.as_generic_type(),
+            telegram=user.telegram.as_generic_type(),
+            phone=user.phone.as_generic_type(),
+            username=user.username.as_generic_type(),
+            subject=subject,
+            message=message,
         )
+        return result.id if hasattr(result, "id") else str(result)

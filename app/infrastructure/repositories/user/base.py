@@ -8,7 +8,7 @@ from domain.entities.user import UserEntity
 
 
 @dataclass
-class BaseUsersRepository(ABC):
+class BaseUserRepository(ABC):
     @abstractmethod
     async def check_user_exists_by_username(self, username: str) -> bool: ...
 

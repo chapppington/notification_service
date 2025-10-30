@@ -12,7 +12,12 @@ services:
     volumes:
       - ../app/:/app/
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      celery-worker:
+        condition: service_started
     networks:
       - backend
     

@@ -13,6 +13,11 @@ class Config(BaseSettings):
         alias="MONGODB_USER_COLLECTION",
     )
 
+    redis_connection_uri: str = Field(
+        default="redis://redis:6379/0",
+        alias="REDIS_CONNECTION_URI",
+    )
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

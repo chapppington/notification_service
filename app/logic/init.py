@@ -6,17 +6,15 @@ from punq import (
     Scope,
 )
 
-from infrastructure.repositories.user.base import BaseUsersRepository
+from infrastructure.repositories.user.base import BaseUserRepository
 from infrastructure.repositories.user.mongo import MongoDBUsersRepository
 from infrastructure.task_queues.base import BaseTaskQueue
-from infrastructure.task_queues.celery import CeleryTaskQueue
+from infrastructure.task_queues.celery_adapter import CeleryTaskQueue
+from infrastructure.task_queues.celery_app import celery_app
 from logic.mediator import Mediator
 from logic.services.notification import (
     BaseNotificationService,
     ComposedNotificationService,
-    EmailNotificationService,
-    SmsNotificationService,
-    TelegramNotificationService,
 )
 from logic.services.user import (
     BaseUserService,
@@ -51,7 +49,7 @@ def _init_container() -> Container:
         )
 
     container.register(
-        BaseUsersRepository,
+        BaseUserRepository,
         factory=init_user_mongodb_repository,
         scope=Scope.singleton,
     )
@@ -63,11 +61,7 @@ def _init_container() -> Container:
     )
 
     def init_task_queue():
-        return CeleryTaskQueue(
-            broker_url="redis://redis:6379/0",
-            backend_url="redis://redis:6379/0",
-            app_name="notification_service",
-        )
+        return CeleryTaskQueue(celery_app=celery_app)
 
     container.register(
         BaseTaskQueue,
@@ -76,32 +70,8 @@ def _init_container() -> Container:
     )
 
     container.register(
-        EmailNotificationService,
-        scope=Scope.singleton,
-    )
-
-    container.register(
-        TelegramNotificationService,
-        scope=Scope.singleton,
-    )
-
-    container.register(
-        SmsNotificationService,
-        scope=Scope.singleton,
-    )
-
-    def init_composed_notification_service():
-        return ComposedNotificationService(
-            notification_services=[
-                container.resolve(EmailNotificationService),
-                container.resolve(TelegramNotificationService),
-                container.resolve(SmsNotificationService),
-            ],
-        )
-
-    container.register(
         BaseNotificationService,
-        factory=init_composed_notification_service,
+        ComposedNotificationService,
         scope=Scope.singleton,
     )
 

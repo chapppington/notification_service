@@ -4,7 +4,7 @@ CELERY_WORKER_CONTAINER = celery-worker
 REDIS_CONTAINER = redis
 APP_FILE = docker_compose/app.yaml
 STORAGES_FILE = docker_compose/storages.yaml
-CELERY_FILE = docker_compose/celery.yaml
+TASK_QUEUE_FILE = docker_compose/task_queue.yaml
 DC = docker compose
 ENV_FILE = --env-file .env
 EXEC = docker exec -it
@@ -12,11 +12,11 @@ LOGS = docker logs
 
 .PHONY: all
 all:
-	${DC} -f ${STORAGES_FILE} -f ${CELERY_FILE} -f ${APP_FILE} ${ENV_FILE} up --build -d
+	${DC} -f ${STORAGES_FILE} -f ${TASK_QUEUE_FILE} -f ${APP_FILE} ${ENV_FILE} up --build -d
 
 .PHONY: all-down
 all-down:
-	${DC} -f ${STORAGES_FILE} -f ${CELERY_FILE} -f ${APP_FILE} ${ENV_FILE} down
+	${DC} -f ${STORAGES_FILE} -f ${TASK_QUEUE_FILE} -f ${APP_FILE} ${ENV_FILE} down
 
 .PHONY: storages
 storages:
@@ -46,13 +46,13 @@ app-shell:
 app-down:
 	${DC} -f ${APP_FILE} down
 
-.PHONY: celery
-celery:
-	${DC} -f ${CELERY_FILE} ${ENV_FILE} up --build -d
+.PHONY: task-queue
+task-queue:
+	${DC} -f ${TASK_QUEUE_FILE} ${ENV_FILE} up --build -d
 
-.PHONY: celery-down
-celery-down:
-	${DC} -f ${CELERY_FILE} down
+.PHONY: task-queue-down
+task-queue-down:
+	${DC} -f ${TASK_QUEUE_FILE} down
 
 .PHONY: celery-logs
 celery-logs:
@@ -62,9 +62,9 @@ celery-logs:
 redis-cli:
 	${EXEC} ${REDIS_CONTAINER} redis-cli
 
-.PHONY: flower
-flower:
-	@echo "Flower UI available at http://localhost:5555"
+.PHONY: redis-logs
+redis-logs:
+	${LOGS} ${REDIS_CONTAINER} -f
 
 .PHONY: precommit 
 precommit:
@@ -72,4 +72,4 @@ precommit:
 
 .PHONY: test
 test:
-	pytest -v
+	${EXEC} ${APP_CONTAINER} pytest

@@ -6,11 +6,11 @@ from infrastructure.repositories.converters import (
     convert_user_document_to_entity,
     convert_user_entity_to_document,
 )
-from infrastructure.repositories.user.base import BaseUsersRepository
+from infrastructure.repositories.user.base import BaseUserRepository
 
 
 @dataclass
-class MongoDBUsersRepository(BaseUsersRepository, BaseMongoDBRepository):
+class MongoDBUsersRepository(BaseUserRepository, BaseMongoDBRepository):
     async def get_user_by_oid(self, oid: str) -> UserEntity | None:
         user_document = await self._collection.find_one(filter={"oid": oid})
 

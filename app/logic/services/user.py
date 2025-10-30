@@ -11,7 +11,7 @@ from domain.value_objects.user import (
     TelegramValueObject,
     UsernameValueObject,
 )
-from infrastructure.repositories.user.base import BaseUsersRepository
+from infrastructure.repositories.user.base import BaseUserRepository
 from logic.exceptions.user import UserAlreadyExistsException
 
 
@@ -29,7 +29,7 @@ class BaseUserService(ABC):
 
 @dataclass
 class MongoUserService(BaseUserService):
-    user_repository: BaseUsersRepository
+    user_repository: BaseUserRepository
 
     async def create_user(
         self,
