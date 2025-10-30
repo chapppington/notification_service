@@ -16,10 +16,11 @@
 
 - Python 3.13, FastAPI — REST API
 - Pydantic v2, pydantic-settings — схемы и конфигурация
-- MongoDB (motor) — хранилище пользователей
-- Celery + брокер (в docker worker) — асинхронные задачи и fallback-отправка
+- MongoDB (async motor client) — хранилище пользователей
+- Celery — асинхронные задачи
+- Redis - брокер для Celery
 - punq — DI‑контейнер
-- Pytest — тесты, in-memory реализации для изоляции
+- Pytest — тесты
 
 ---
 
