@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from domain.exceptions.base import ApplicationException
+from domain.base.exceptions import ApplicationException
 
 
 @dataclass(eq=False)
@@ -8,6 +8,15 @@ class UserException(ApplicationException):
     @property
     def message(self) -> str:
         return "Chat exception occurred"
+
+
+@dataclass(eq=False)
+class UserAlreadyExistsException(UserException):
+    username: str
+
+    @property
+    def message(self) -> str:
+        return f"User with username '{self.username}' already exists"
 
 
 @dataclass(eq=False)

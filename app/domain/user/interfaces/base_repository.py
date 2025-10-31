@@ -4,7 +4,7 @@ from abc import (
 )
 from dataclasses import dataclass
 
-from domain.entities.user import UserEntity
+from domain.user.entities import UserEntity
 
 
 @dataclass

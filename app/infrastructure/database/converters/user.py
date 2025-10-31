@@ -3,8 +3,8 @@ from typing import (
     Mapping,
 )
 
-from domain.entities.user import UserEntity
-from domain.value_objects.user import (
+from domain.user.entities import UserEntity
+from domain.user.value_objects import (
     EmailValueObject,
     PhoneValueObject,
     TelegramValueObject,

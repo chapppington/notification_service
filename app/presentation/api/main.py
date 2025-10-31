@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from presentation.api import main_router
+from presentation.api.v1 import v1_router
 
 
 def create_app() -> FastAPI:
@@ -11,6 +11,6 @@ def create_app() -> FastAPI:
         debug=True,
     )
 
-    app.include_router(main_router)
+    app.include_router(v1_router)
 
     return app

@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 
-from domain.entities.user import UserEntity
-from infrastructure.repositories.base.mongo import BaseMongoDBRepository
-from infrastructure.repositories.converters import (
+from domain.user.entities import UserEntity
+from domain.user.interfaces.base_repository import BaseUserRepository
+from infrastructure.database.converters.user import (
     convert_user_document_to_entity,
     convert_user_entity_to_document,
 )
-from infrastructure.repositories.user.base import BaseUserRepository
+from infrastructure.database.repositories.base.mongo import BaseMongoDBRepository
 
 
 @dataclass

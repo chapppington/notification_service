@@ -5,12 +5,12 @@ from fastapi import (
     status,
 )
 
-from domain.exceptions.base import ApplicationException
+from domain.base.exceptions import ApplicationException
+from logic.commands.user import CreateUserCommand
 from logic.init import init_container
 from logic.mediator import Mediator
-from logic.use_cases.user import CreateUserUseCase
 from presentation.api.schemas import ErrorResponseSchema
-from presentation.api.user.schemas import (
+from presentation.api.v1.user.schemas import (
     CreateUserRequestSchema,
     CreateUserResponseSchema,
 )
@@ -39,8 +39,8 @@ async def create_user_handler(
     mediator: Mediator = container.resolve(Mediator)
 
     try:
-        user, *_ = await mediator.handle_use_case(
-            CreateUserUseCase(
+        user, *_ = await mediator.handle_command(
+            CreateUserCommand(
                 username=schema.username,
                 email=schema.email,
                 telegram=schema.telegram,

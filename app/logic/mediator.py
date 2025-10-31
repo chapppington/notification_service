@@ -5,38 +5,38 @@ from dataclasses import (
 )
 from typing import Iterable
 
-from logic.exceptions.mediator import UseCaseHandlersNotRegisteredException
-from logic.use_cases.base import (
-    BaseUseCase,
-    BaseUseCaseHandler,
-    UseCaseResultType,
-    UseCaseType,
+from logic.commands.base import (
+    BaseCommand,
+    BaseCommandHandler,
+    CommandResultType,
+    CommandType,
 )
+from logic.exceptions.mediator import CommandHandlersNotRegisteredException
 
 
 @dataclass(eq=False)
 class Mediator:
-    use_cases_map: dict[UseCaseType, BaseUseCaseHandler] = field(
+    commands_map: dict[CommandType, BaseCommandHandler] = field(
         default_factory=lambda: defaultdict(list),
         kw_only=True,
     )
 
-    def register_use_case(
+    def register_command(
         self,
-        use_case: UseCaseType,
-        use_case_handlers: Iterable[BaseUseCaseHandler[UseCaseType, UseCaseResultType]],
+        command: CommandType,
+        command_handlers: Iterable[BaseCommandHandler[CommandType, CommandResultType]],
     ):
-        self.use_cases_map[use_case].extend(use_case_handlers)
+        self.commands_map[command].extend(command_handlers)
 
-    async def handle_use_case(
+    async def handle_command(
         self,
-        use_case: BaseUseCase,
-    ) -> Iterable[UseCaseResultType]:
-        use_case_type = use_case.__class__
+        command: BaseCommand,
+    ) -> Iterable[CommandResultType]:
+        command_type = command.__class__
 
-        handlers = self.use_cases_map.get(use_case_type)
+        handlers = self.commands_map.get(command_type)
 
         if not handlers:
-            raise UseCaseHandlersNotRegisteredException(use_case_type)
+            raise CommandHandlersNotRegisteredException(command_type)
 
-        return [await handler.handle(use_case) for handler in handlers]
+        return [await handler.handle(command) for handler in handlers]

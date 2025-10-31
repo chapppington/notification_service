@@ -1,6 +1,6 @@
 import pytest
 
-from domain.exceptions.user import (
+from domain.user.exceptions import (
     EmptyEmailException,
     EmptyPhoneException,
     EmptyTelegramException,
@@ -10,7 +10,7 @@ from domain.exceptions.user import (
     InvalidTelegramException,
     UsernameTooLongException,
 )
-from domain.value_objects.user import (
+from domain.user.value_objects import (
     EmailValueObject,
     PhoneValueObject,
     TelegramValueObject,

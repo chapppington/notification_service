@@ -1,34 +1,18 @@
-from abc import (
-    ABC,
-    abstractmethod,
-)
 from dataclasses import dataclass
 
-from domain.entities.user import UserEntity
-from domain.value_objects.user import (
+from domain.user.entities import UserEntity
+from domain.user.exceptions import UserAlreadyExistsException
+from domain.user.interfaces.base_repository import BaseUserRepository
+from domain.user.value_objects import (
     EmailValueObject,
     PhoneValueObject,
     TelegramValueObject,
     UsernameValueObject,
 )
-from infrastructure.repositories.user.base import BaseUserRepository
-from logic.exceptions.user import UserAlreadyExistsException
 
 
 @dataclass
-class BaseUserService(ABC):
-    @abstractmethod
-    async def create_user(
-        self,
-        username: str,
-        email: str,
-        telegram: str,
-        phone: str,
-    ) -> UserEntity: ...
-
-
-@dataclass
-class MongoUserService(BaseUserService):
+class UserService:
     user_repository: BaseUserRepository
 
     async def create_user(

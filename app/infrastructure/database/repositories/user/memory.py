@@ -3,8 +3,8 @@ from dataclasses import (
     field,
 )
 
-from domain.entities.user import UserEntity
-from infrastructure.repositories.user.base import BaseUserRepository
+from domain.user.entities import UserEntity
+from domain.user.interfaces.base_repository import BaseUserRepository
 
 
 @dataclass

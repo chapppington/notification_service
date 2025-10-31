@@ -1,7 +1,7 @@
 from punq import Container
 from pytest import fixture
 
-from infrastructure.repositories.user.base import BaseUserRepository
+from domain.user.interfaces.base_repository import BaseUserRepository
 from logic.mediator import Mediator
 from tests.fixtures import init_dummy_container
 

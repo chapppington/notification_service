@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from domain.entities.base import BaseEntity
-from domain.value_objects.user import (
+from domain.base.entity import BaseEntity
+from domain.user.value_objects import (
     EmailValueObject,
     PhoneValueObject,
     TelegramValueObject,

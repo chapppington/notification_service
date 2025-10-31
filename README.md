@@ -32,7 +32,7 @@ Cервис уведомлений c резервной доставкой. По
   - `exceptions` — доменные исключения (ошибки валидации и т.п.).
 
 - **Logic (application layer)**: `app/logic`
-  - `use_cases` — сценарии: `CreateUserUseCase` (создаёт пользователя и инициирует отправку уведомления).
+  - `commands` — команды: `CreateUserCommand` (создаёт пользователя и инициирует отправку уведомления).
   - `services` — прикладные сервисы: `UserService`, `NotificationService` (оборачивает очередь задач, отправляет в worker одну задачу с параметрами пользователя).
   - `mediator` — регистрация и вызов use-case’ов.
 
@@ -47,7 +47,7 @@ Cервис уведомлений c резервной доставкой. По
 
 ## Поток данных (коротко)
 1) Клиент вызывает `POST /user/` c `username/email/telegram/phone`.
-2) Контроллер дергает `CreateUserUseCase` через `Mediator`.
+2) Контроллер дергает `CreateUserCommand` через `Mediator`.
 3) Юзер создаётся, затем `NotificationService` отправляет одну задачу в очередь: `send_notification_with_fallback`.
 4) Worker берёт задачу и пытается: Email → Telegram → SMS (до успеха).
 

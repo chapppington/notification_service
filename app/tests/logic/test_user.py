@@ -1,21 +1,21 @@
 import pytest
 from faker import Faker
 
-from domain.entities.user import UserEntity
-from domain.value_objects.user import (
+from domain.user.entities import UserEntity
+from domain.user.exceptions import UserAlreadyExistsException
+from domain.user.interfaces.base_repository import BaseUserRepository
+from domain.user.value_objects import (
     EmailValueObject,
     PhoneValueObject,
     TelegramValueObject,
     UsernameValueObject,
 )
-from infrastructure.repositories.user.base import BaseUserRepository
-from logic.exceptions.user import UserAlreadyExistsException
+from logic.commands.user import CreateUserCommand
 from logic.mediator import Mediator
-from logic.use_cases.user import CreateUserUseCase
 
 
 @pytest.mark.asyncio
-async def test_create_user_use_case_success(
+async def test_create_user_command_success(
     user_repository: BaseUserRepository,
     mediator: Mediator,
     faker: Faker,
@@ -26,8 +26,8 @@ async def test_create_user_use_case_success(
     phone = "+1 (555) 123-4567"
 
     user: UserEntity
-    user, *_ = await mediator.handle_use_case(
-        CreateUserUseCase(
+    user, *_ = await mediator.handle_command(
+        CreateUserCommand(
             username=username,
             email=email,
             telegram=telegram,
@@ -41,7 +41,7 @@ async def test_create_user_use_case_success(
 
 
 @pytest.mark.asyncio
-async def test_create_user_use_case_username_already_exists(
+async def test_create_user_command_username_already_exists(
     user_repository: BaseUserRepository,
     mediator: Mediator,
     faker: Faker,
@@ -57,8 +57,8 @@ async def test_create_user_use_case_username_already_exists(
     await user_repository.add_user(existing_user)
 
     with pytest.raises(UserAlreadyExistsException):
-        await mediator.handle_use_case(
-            CreateUserUseCase(
+        await mediator.handle_command(
+            CreateUserCommand(
                 username=username,
                 email=faker.email(),
                 telegram="@" + faker.user_name(),

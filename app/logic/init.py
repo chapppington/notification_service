@@ -6,23 +6,20 @@ from punq import (
     Scope,
 )
 
-from infrastructure.repositories.user.base import BaseUserRepository
-from infrastructure.repositories.user.mongo import MongoDBUsersRepository
+from domain.user.interfaces.base_repository import BaseUserRepository
+from domain.user.service import UserService
+from infrastructure.database.repositories.user.mongo import MongoDBUsersRepository
 from infrastructure.task_queues.base import BaseTaskQueue
 from infrastructure.task_queues.celery_adapter import CeleryTaskQueue
 from infrastructure.task_queues.celery_app import celery_app
+from logic.commands.user import (
+    CreateUserCommand,
+    CreateUserCommandHandler,
+)
 from logic.mediator import Mediator
 from logic.services.notification import (
     BaseNotificationService,
     ComposedNotificationService,
-)
-from logic.services.user import (
-    BaseUserService,
-    MongoUserService,
-)
-from logic.use_cases.user import (
-    CreateUserUseCase,
-    CreateUserUseCaseHandler,
 )
 from settings.config import Config
 
@@ -54,12 +51,6 @@ def _init_container() -> Container:
         scope=Scope.singleton,
     )
 
-    container.register(
-        BaseUserService,
-        MongoUserService,
-        scope=Scope.singleton,
-    )
-
     def init_task_queue():
         return CeleryTaskQueue(celery_app=celery_app)
 
@@ -70,19 +61,24 @@ def _init_container() -> Container:
     )
 
     container.register(
+        UserService,
+        scope=Scope.singleton,
+    )
+
+    container.register(
         BaseNotificationService,
         ComposedNotificationService,
         scope=Scope.singleton,
     )
 
-    container.register(CreateUserUseCaseHandler)
+    container.register(CreateUserCommandHandler)
 
     def init_mediator() -> Mediator:
         mediator = Mediator()
-        mediator.register_use_case(
-            use_case=CreateUserUseCase,
-            use_case_handlers=[
-                container.resolve(CreateUserUseCaseHandler),
+        mediator.register_command(
+            command=CreateUserCommand,
+            command_handlers=[
+                container.resolve(CreateUserCommandHandler),
             ],
         )
 
