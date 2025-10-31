@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from domain.entities.user import UserEntity
+from domain.user.entities import UserEntity
 
 
 class CreateUserRequestSchema(BaseModel):
